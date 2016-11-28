@@ -7,7 +7,7 @@
         <title>JSP Page</title>
 
         <script type="text/javascript">
-            function validate_form( )
+            function validateForm( )
             {
                 valid = true;
                 var login = document.getElementById("login");
@@ -29,7 +29,7 @@
     </head>
     <body>
         <div class="login">
-            <form onsubmit="return validate_form( );" name="login_form" action="StartServlet" method="post">
+            <form onsubmit="return validateForm( );" action="StartServlet" method="post">
                 <ul>
                     <li><p>Login:</p> <input id="login" type="text" name="login" value="${login}"/><span><br>${loginNotFound}</span></li>
 
