@@ -40,6 +40,7 @@
                 <input type="submit" name="enter" value="Log In"/>
 
             </form>
+                <br/>
             <form action="StartServlet" method="post">
                 <input id="register" type="submit" name="register" value="Registration"/>
             </form>
