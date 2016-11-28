@@ -7,32 +7,24 @@
         <title>JSP Page</title>
 
         <script type="text/javascript">
-
             function validate_form( )
             {
                 valid = true;
-                var register = document.getElementById("register");
-                if (register.value !== null) {
-                    alert(register.onclick);
+                var login = document.getElementById("login");
+                if (login.value === "")
+                {
+                    alert("Write login");
                     valid = false;
                 } else {
-                    var login = document.getElementById("login");
-                    if (login.value === "")
+                    var password = document.getElementById("password");
+                    if (password.value === "")
                     {
-                        alert("Write login");
+                        alert("Write password");
                         valid = false;
-                    } else {
-                        var password = document.getElementById("password");
-                        if (password.value === "")
-                        {
-                            alert("Write password");
-                            valid = false;
-                        }
                     }
                 }
                 return valid;
             }
-
         </script>
     </head>
     <body>
@@ -46,6 +38,9 @@
 
 
                 <input type="submit" name="enter" value="Log In"/>
+
+            </form>
+            <form action="StartServlet" method="post">
                 <input id="register" type="submit" name="register" value="Registration"/>
             </form>
         </div>
