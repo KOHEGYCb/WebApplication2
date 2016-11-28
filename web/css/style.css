@@ -1,0 +1,73 @@
+body{
+    background: #999;
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 100px;
+}
+.login {
+    /*border: 1px solid red;*/
+    width: 100%;
+    text-align: center;
+    margin-top: 5%;
+    
+}
+.login ul{
+    /*border: 1px solid green;*/
+    list-style: none; 
+    margin: 0; 
+    padding: 0; 
+    margin-bottom: 15px;
+}
+.login li{
+    /*border: 1px solid aqua;*/
+    text-align: center;
+}
+span, p{
+    color: white; 
+}
+.registration{
+    border: 1px solid white;
+}
+.registration .names{
+    position: relative;
+    float: left;
+    border: 1px solid red;
+    margin-left: -76px;
+    width: 100px;
+    left: 50%;
+}
+.fields input{
+    margin-bottom: 15px;
+}
+h2{
+    margin: auto;
+    text-align: center;
+}
+table{
+    background: #494949;
+    color: goldenrod;
+    width: 80%;
+    margin: auto;
+    text-align: center;
+}
+table tr:first-child td{
+    background: #696969;
+    color: orange;
+}
+table td{
+    border-top: 1px solid white;
+    padding-top: 5px;
+}
+table tr:last-child td{
+    border-bottom: 1px solid white;
+}
+form{
+    position: relative;
+    width: 80%;
+    left: 10%;
+}
+.text{
+    position: relative;
+    width: 80%;
+    left: 10%;
+}
