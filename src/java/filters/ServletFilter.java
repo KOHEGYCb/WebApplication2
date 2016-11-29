@@ -25,6 +25,20 @@ public class ServletFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) request;
+        System.out.println(req.getRequestURI());
+        HttpSession session = req.getSession();
+        System.out.println("req.getAttribute(\"enter\")"+request.getParameter("enter"));
+        if (request.getParameter("logout") != null){
+            session.invalidate();
+        }
+        if (req.getParameter("enter") != null || request.getParameter("register") != null) {
+            if (session == null) {
+                ServletContext ctx = filterConfig.getServletContext();
+                RequestDispatcher dispatcher = ctx.getRequestDispatcher("/index.jsp");
+                dispatcher.forward(request, response);
+            }
+        }
 //        System.out.println("Filter Start");
 //        HttpServletRequest httpRequest = (HttpServletRequest) request;
 //        HttpSession session = httpRequest.getSession();
@@ -44,7 +58,7 @@ public class ServletFilter implements Filter {
 //            } else {
 //                System.out.println("session != null");
 //                System.out.println(session.getAttribute("sessionLogin"));
-                filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);
 //
 //            }
 //        }

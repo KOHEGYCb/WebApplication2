@@ -42,17 +42,17 @@ public class RouteServlet extends ManagerServlet {
             forward("/jsp/admin.jsp", request, response);
         }
         if (request.getParameter("deleteRoute") != null) {
-//            System.out.println(request.getParameter("idRoute"));
             int idRoute = Integer.parseInt(request.getParameter("idRoute"));
             RouteDAO.getINSTANCE().deleteRoute(RouteDAO.getINSTANCE().getRouteById(idRoute));
             forward("/jsp/admin.jsp", request, response);
         }
         if (request.getParameter("updateRoute") != null) {
+
             int idRoute = Integer.parseInt(request.getParameter("idRoute"));
-            String startStation = request.getParameter("startStation");
-            String finalStation = request.getParameter("finalStation");
             Route route = RouteDAO.getINSTANCE().getRouteById(idRoute);
             if (route != null) {
+                String startStation = request.getParameter("startStation");
+                String finalStation = request.getParameter("finalStation");
                 route.setStartStation(StationDAO.getINSTANCE().getStationByName(startStation));
                 route.setFinalStation(StationDAO.getINSTANCE().getStationByName(finalStation));
                 RouteDAO.getINSTANCE().updateRoute(route);

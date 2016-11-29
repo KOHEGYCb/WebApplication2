@@ -74,5 +74,27 @@
                 </select></p>
             <p><input type="submit" name="deleteRoute" value="Delete"/><span>${errorDelete}</span></p>
         </form>
+
+        <h3 class="text">Update Route</h3>
+        <form action="RouteServlet" method="post">
+            <p>Route: <select name="idRoute">
+                    <%
+                        for (int i = 0; i < routes.size(); i++) {
+                            boolean disabled = true;
+                            List<Transport> transports = TransportDAO.getINSTANCE().getTransportByIdRoute(routes.get(i).getId());
+                            if (transports.size() == 0) {
+                                disabled = false;
+                            }
+                            int idRoute = routes.get(i).getId();
+                            String startStation = routes.get(i).getStartStation().getName();
+                            String finalStation = routes.get(i).getFinalStation().getName();
+                    %>
+                    <option <% if (disabled) {%> <%= strDisabled%> <%}%> value="<%= idRoute%>"><%= idRoute%>: <%= startStation%> - <%= finalStation%></option>
+                    <%
+                        }
+                    %>
+                </select></p>
+            <p><input type="submit" name="updateRoute" value="Update"/><span>${errorDelete}</span></p>
+        </form>
     </body>
 </html>

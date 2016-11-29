@@ -16,7 +16,7 @@ public class AdminServlet extends ManagerServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if (request.getParameter("logout") != null) {
-            request.getSession().invalidate();
+//            request.getSession().invalidate();
 //            request.getSession().setAttribute("logout", "true");
             RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/index.jsp");
             requestDispatcher.forward(request, response);
@@ -36,4 +36,9 @@ public class AdminServlet extends ManagerServlet {
         }
     }
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.forward("/index.jsp", req, resp);
+    }
+    
 }
