@@ -1,5 +1,6 @@
 package beans.route;
 
+import beans.Entity;
 import java.io.Serializable;
 import java.util.Objects;
 import interfaces.Writer;
@@ -8,9 +9,8 @@ import interfaces.Writer;
  *
  * @author Dmitry
  */
-public class Station implements Serializable, Writer{
+public class Station extends Entity implements Serializable, Writer{
     
-    private int id;
     private String name;
     private int typeRoad;
     
@@ -32,7 +32,7 @@ public class Station implements Serializable, Writer{
      * @param name
      */
     public Station(int id, String name){
-        this.id = id;
+        setId(id);
         this.name = name;
         this.typeRoad = new java.util.Random().nextInt(4);
     }
@@ -44,7 +44,7 @@ public class Station implements Serializable, Writer{
      * @param typeRoad
      */
     public Station(int id, String name, int typeRoad){
-        this.id = id;
+        setId(id);
         this.name = name;
         this.typeRoad = typeRoad;
     }
@@ -56,7 +56,7 @@ public class Station implements Serializable, Writer{
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 29 * hash + this.id;
+        hash = 29 * hash + getId();
         hash = 29 * hash + Objects.hashCode(this.name);
         return hash;
     }
@@ -78,7 +78,7 @@ public class Station implements Serializable, Writer{
             return false;
         }
         final Station other = (Station) obj;
-        if (this.id != other.id) {
+        if (getId() != other.getId()) {
             return false;
         }
         if (!Objects.equals(this.name, other.name)) {
@@ -93,21 +93,7 @@ public class Station implements Serializable, Writer{
      */
     @Override
     public String toString() {
-        return "Station {\n     id: " + id + "\n     name: " + name + "\n     type road: " + typeRoad + "\n  }\n";
-    }
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
+        return "Station {\n     id: " + getId() + "\n     name: " + name + "\n     type road: " + typeRoad + "\n  }\n";
     }
 
     /**
@@ -145,7 +131,7 @@ public class Station implements Serializable, Writer{
 
     @Override
     public String writeShort() {
-        return "Station { id: " + id + "; name: " + name + "  }\n";
+        return "Station { id: " + getId() + "; name: " + name + "  }\n";
     }
     
     

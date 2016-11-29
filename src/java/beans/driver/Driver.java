@@ -1,12 +1,13 @@
 package beans.driver;
 
+import beans.Entity;
+
 /**
  *
  * @author Dmitry
  */
-public class Driver {
+public class Driver extends Entity {
 
-    private int id;
     private String login;
     private String password;
     private String name;
@@ -28,11 +29,12 @@ public class Driver {
     }
 
     public Driver(int id, String login, String password, String name, String surname) {
-        this.id = id;
+        setId(id);
         this.login = login;
         this.password = password;
         this.name = name;
         this.surname = surname;
+
     }
 
     /**
@@ -90,19 +92,4 @@ public class Driver {
     public void setSurname(String surname) {
         this.surname = surname;
     }
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
 }

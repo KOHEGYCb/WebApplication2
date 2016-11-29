@@ -1,13 +1,13 @@
 package beans.transport;
 
-import beans.timetable.Timetable;
+import beans.Entity;
 import interfaces.Writer;
 
 /**
  *
  * @author Dmitry
  */
-public abstract class Transport implements Writer {
+public abstract class Transport extends Entity implements Writer {
 
     private int id;
 //    private Timetable timetable;
@@ -34,6 +34,7 @@ public abstract class Transport implements Writer {
     /**
      * @return the id of some Transport
      */
+    @Override
     public int getId() {
         return id;
     }
@@ -41,6 +42,7 @@ public abstract class Transport implements Writer {
     /**
      * @param id the id to set new Transport id
      */
+    @Override
     public void setId(int id) {
         this.id = id;
     }
