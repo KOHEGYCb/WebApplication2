@@ -75,16 +75,4 @@
         <servlet-name>TransportServlet</servlet-name>
         <url-pattern>/TransportServlet</url-pattern>
     </servlet-mapping>
-    
-    <filter>
-        <filter-name>ServletFilter</filter-name>
-        <filter-class>filters.ServletFilter</filter-class>
-    </filter>
- 
-    <filter-mapping>
-        <filter-name>ServletFilter</filter-name>
-        <servlet-name>StartServlet</servlet-name>
-        <servlet-name>AdminServlet</servlet-name>
-        <servlet-name>UserServlet</servlet-name>
-    </filter-mapping>
 </web-app>

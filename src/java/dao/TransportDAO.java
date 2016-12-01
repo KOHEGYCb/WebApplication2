@@ -61,6 +61,17 @@ public class TransportDAO {
         }
     }
 
+    public void deleteTransport(Transport transport) {
+        try{
+            Connection connection = ConnectionPool.getInstance().getConnection();
+            PreparedStatement statement = connection.prepareStatement("delete from transport where idTransport = " + transport.getId() + ";");
+            statement.executeUpdate();
+            ConnectionPool.getInstance().releaseConnection(connection);
+        } catch (SQLException ex) {
+            Logger.getLogger(DriversDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public Transport getTransport(int idTransport) {
         Transport transport = null;
         try {
@@ -68,7 +79,7 @@ public class TransportDAO {
             PreparedStatement statement = connection.prepareStatement("select * from transport where idTransport = " + idTransport + ";");
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                createTransport(result);
+                transport = createTransport(result);
             }
             ConnectionPool.getInstance().releaseConnection(connection);
         } catch (SQLException ex) {
@@ -145,21 +156,22 @@ public class TransportDAO {
 
     private Transport createTransport(ResultSet result) {
         Transport transport = null;
-        int number;
+        
         try {
-            number = result.getInt("number");
+            int id = result.getInt("idTransport");
+            int number = result.getInt("number");
             int idDriver = result.getInt("idDriver");
             int idRoute = result.getInt("idRoutes");
 
             switch (result.getInt("type")) {
                 case 0:
-                    transport = new Bus(number, idDriver, idRoute);
+                    transport = new Bus(id, number, idDriver, idRoute);
                     break;
                 case 1:
-                    transport = new Trolleybus(number, idDriver, idRoute);
+                    transport = new Trolleybus(id, number, idDriver, idRoute);
                     break;
                 case 2:
-                    transport = new Tram(number, idDriver, idRoute);
+                    transport = new Tram(id, number, idDriver, idRoute);
                     break;
                 default:
                     break;

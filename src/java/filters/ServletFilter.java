@@ -7,6 +7,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Dmitry
  */
+@WebFilter(urlPatterns = {"/*"})
 public class ServletFilter implements Filter {
 
     private FilterConfig filterConfig;
@@ -25,43 +27,25 @@ public class ServletFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        System.out.println("Filter");
         HttpServletRequest req = (HttpServletRequest) request;
-        System.out.println(req.getRequestURI());
         HttpSession session = req.getSession();
-        System.out.println("req.getAttribute(\"enter\")"+request.getParameter("enter"));
-        if (request.getParameter("logout") != null){
-            session.invalidate();
-        }
+
         if (req.getParameter("enter") != null || request.getParameter("register") != null) {
-            if (session == null) {
+            System.out.println("button pressed");
+            
+        }else{
+            if (session.getAttribute("sessionLogin") == null) {
+                System.out.println("Session = null");
+
                 ServletContext ctx = filterConfig.getServletContext();
                 RequestDispatcher dispatcher = ctx.getRequestDispatcher("/index.jsp");
-                dispatcher.forward(request, response);
+//                dispatcher.forward(request, response);
             }
         }
-//        System.out.println("Filter Start");
-//        HttpServletRequest httpRequest = (HttpServletRequest) request;
-//        HttpSession session = httpRequest.getSession();
-//        if (request.getParameter("enter") != null) {
-//            filterChain.doFilter(request, response);
-//        } else {
-//            if (session.getAttribute("logout").equals("true")) {
-//
-//                session.setAttribute("sessionLogin", null);
-//                session.setAttribute("sessionPassword", null);
-//                session.setAttribute("sessionName", null);
-//                session.setAttribute("sessionSurname", null);
-//                System.out.println("session = null");
-//                ServletContext ctx = filterConfig.getServletContext();
-//                RequestDispatcher dispatcher = ctx.getRequestDispatcher("/index.jsp");
-//                dispatcher.forward(request, response);
-//            } else {
-//                System.out.println("session != null");
-//                System.out.println(session.getAttribute("sessionLogin"));
+
+        System.out.println("End filter***************");
         filterChain.doFilter(request, response);
-//
-//            }
-//        }
     }
 
     @Override

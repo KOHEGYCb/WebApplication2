@@ -20,6 +20,22 @@ public class Tram extends Transport {
         this.idDriver = idDriver;
     }
 
+    public Tram(int id, int number, int idDriver, int idRoute) {
+        super(number, 2, idRoute, idDriver);
+        setId(id);
+        this.idDriver = idDriver;
+    }
+
+    @Override
+    public int getId() {
+        return super.getId(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setId(int id) {
+        super.setId(id); //To change body of generated methods, choose Tools | Templates.
+    }
+
     /**
      *
      * @return the short description of Tram
@@ -37,7 +53,6 @@ public class Tram extends Transport {
 //    public String writeTimetable() {
 //        return "TRAM " + getTimetable().toString();
 //    }
-
     /**
      *
      * @return

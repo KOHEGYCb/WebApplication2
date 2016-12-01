@@ -18,10 +18,11 @@ public class AdminServlet extends ManagerServlet {
         if (request.getParameter("logout") != null) {
 //            request.getSession().invalidate();
 //            request.getSession().setAttribute("logout", "true");
-            RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/index.jsp");
-            requestDispatcher.forward(request, response);
+            forward("/index.jsp", request, response);
         }
-
+        if (request.getParameter("backToAdmin") != null) {
+            forward("/jsp/admin.jsp", request, response);
+        }
         if (request.getParameter("Station") != null) {
             forward("/jsp/admin/Station.jsp", request, response);
         }

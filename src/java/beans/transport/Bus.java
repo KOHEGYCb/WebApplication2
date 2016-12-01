@@ -8,6 +8,7 @@ public class Bus extends Transport {
 
     private int number;
     private int idDriver;
+
     /**
      *
      * @param number
@@ -17,6 +18,23 @@ public class Bus extends Transport {
     public Bus(int number, int idDriver, int idRoute) {
         super(number, 0, idRoute, idDriver);
         this.idDriver = idDriver;
+    }
+
+    public Bus(int id, int number, int idDriver, int idRoute) {
+        super(number, 0, idRoute, idDriver);
+        setId(id);
+        this.idDriver = idDriver;
+    }
+
+    @Override
+    public int getId() {
+        return super.getId(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+    @Override
+    public void setId(int id) {
+        super.setId(id); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -36,7 +54,6 @@ public class Bus extends Transport {
 //    public String writeTimetable() {
 //        return "BUS " + getTimetable().toString();
 //    }
-
     /**
      *
      * @return

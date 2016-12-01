@@ -18,9 +18,6 @@ public class RouteServlet extends ManagerServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("errorCreate", null);
-        if (request.getParameter("backToAdmin") != null) {
-            forward("/jsp/admin.jsp", request, response);
-        }
         if (request.getParameter("createRoute") != null) {
             int startStationName = Integer.parseInt(request.getParameter("startStation"));
             int finalStationName = Integer.parseInt(request.getParameter("finalStation"));

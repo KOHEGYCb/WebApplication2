@@ -16,7 +16,7 @@
     <body>
         <jsp:include page="tables/tableRoute.jsp" flush="true"/>
         <br/>
-        <form  action="RouteServlet" method="post">
+        <form  action="AdminServlet" method="post">
             <input type="submit" name="backToAdmin" value="Back"/>
         </form>
         <h3 class="text">Create Route</h3>

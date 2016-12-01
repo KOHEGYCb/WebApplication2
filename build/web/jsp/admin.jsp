@@ -14,19 +14,12 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-    <%
-        String str = "" + session.getAttribute("sessionName");
-        if("".equals(session.getAttribute("sessionName"))){
-            str = "ljbvharleicmga";
-        }
-    %>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="css/style.css"  rel="stylesheet" type="text/css" >
         <title>JSP Page</title>
     </head>
     <body>
-        <%= str %>
         <h1>Hello Admin</h1>
         <form action="AdminServlet" method="post">
             <input type="submit" name="logout" value="Log out"/>

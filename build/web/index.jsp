@@ -1,12 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-    <%
-        String str = "" + session.getAttribute("sessionName");
-        if("".equals(session.getAttribute("sessionName"))){
-            str = "ljbvharleicmga";
-        }
-    %>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="css/style.css"  rel="stylesheet" type="text/css" >
@@ -34,7 +28,11 @@
         </script>
     </head>
     <body>
-        <%= str %>
+        <%
+            if (session.getAttribute("sessionLogin") != null) {
+                session.invalidate();
+            }
+        %>
         <div class="login">
             <form onsubmit="return validateForm( );" action="StartServlet" method="post">
                 <ul>
@@ -47,7 +45,7 @@
                 <input type="submit" name="enter" value="Log In"/>
 
             </form>
-                <br/>
+            <br/>
             <form action="StartServlet" method="post">
                 <input id="register" type="submit" name="register" value="Registration"/>
             </form>
