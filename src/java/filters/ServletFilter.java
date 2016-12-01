@@ -27,25 +27,20 @@ public class ServletFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println("Filter");
         HttpServletRequest req = (HttpServletRequest) request;
         HttpSession session = req.getSession();
 
         if (req.getParameter("enter") != null || request.getParameter("register") != null) {
-            System.out.println("button pressed");
-            
+            filterChain.doFilter(request, response);
         }else{
             if (session.getAttribute("sessionLogin") == null) {
-                System.out.println("Session = null");
-
                 ServletContext ctx = filterConfig.getServletContext();
                 RequestDispatcher dispatcher = ctx.getRequestDispatcher("/index.jsp");
-//                dispatcher.forward(request, response);
+                dispatcher.forward(request, response);
+            }else{
+                filterChain.doFilter(request, response);
             }
-        }
-
-        System.out.println("End filter***************");
-        filterChain.doFilter(request, response);
+        }        
     }
 
     @Override

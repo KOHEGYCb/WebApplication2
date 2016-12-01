@@ -16,8 +16,7 @@ public class AdminServlet extends ManagerServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if (request.getParameter("logout") != null) {
-//            request.getSession().invalidate();
-//            request.getSession().setAttribute("logout", "true");
+            request.getSession().invalidate();
             forward("/index.jsp", request, response);
         }
         if (request.getParameter("backToAdmin") != null) {
