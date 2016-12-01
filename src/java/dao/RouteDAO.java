@@ -28,46 +28,58 @@ public class RouteDAO {
 
     public void createRoute(Route route) {
         if (!isFound(route)) {
+            Connection connection = null;
+            PreparedStatement statement = null;
             try {
-                Connection connection = ConnectionPool.getInstance().getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(""
+                connection = ConnectionPool.getInstance().getConnection();
+                statement = connection.prepareStatement(""
                         + "insert into routes (startStation, finalStation) values ("
                         + route.getStartStation().getId() + ", "
                         + route.getFinalStation().getId() + ");");
-                preparedStatement.executeUpdate();
+                statement.executeUpdate();
                 ConnectionPool.getInstance().releaseConnection(connection);
             } catch (SQLException ex) {
                 Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                closeJDBC(connection, statement);
             }
         }
     }
 
     public void deleteRoute(Route route) {
         if (isFound(route)) {
-            Connection connection;
+            Connection connection = null;
+            PreparedStatement statement = null;
             try {
                 connection = ConnectionPool.getInstance().getConnection();
-                PreparedStatement statement = connection.prepareStatement("delete from routes where idRoutes = " + route.getId() + ";");
+                statement = connection.prepareStatement("delete from routes where idRoutes = " + route.getId() + ";");
                 statement.executeUpdate();
                 ConnectionPool.getInstance().releaseConnection(connection);
             } catch (SQLException ex) {
                 Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                closeJDBC(connection, statement);
             }
         }
     }
 
     public List<Route> getAllRoute() {
         List<Route> routes = new ArrayList<Route>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement("select * from routes;");
-            ResultSet result = statement.executeQuery();
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement("select * from routes;");
+            result = statement.executeQuery();
             while (result.next()) {
                 routes.add(new Route(result.getInt("idRoutes"), StationDAO.getINSTANCE().getStationById(result.getInt("startStation")), StationDAO.getINSTANCE().getStationById(result.getInt("finalStation"))));
             }
             ConnectionPool.getInstance().releaseConnection(connection);
         } catch (SQLException ex) {
             Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeJDBC(connection, statement, result);
         }
 
         return routes;
@@ -75,16 +87,21 @@ public class RouteDAO {
 
     public Route getRouteById(int idRoute) {
         Route route = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement("select * from routes where idRoutes = " + idRoute + ";");
-            ResultSet result = statement.executeQuery();
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement("select * from routes where idRoutes = " + idRoute + ";");
+            result = statement.executeQuery();
             if (result.next()) {
                 route = new Route(idRoute, StationDAO.getINSTANCE().getStationById(result.getInt("startStation")), StationDAO.getINSTANCE().getStationById(result.getInt("finalStation")));
             }
             ConnectionPool.getInstance().releaseConnection(connection);
         } catch (SQLException ex) {
             Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeJDBC(connection, statement, result);
         }
 
         return route;
@@ -92,19 +109,24 @@ public class RouteDAO {
 
     public Route getRouteByStations(String startStation, String finalStation) {
         Route route = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         if (isFound(new Route(0, StationDAO.getINSTANCE().getStationByName(startStation), StationDAO.getINSTANCE().getStationByName(finalStation)))) {
             try {
-                Connection connection = ConnectionPool.getInstance().getConnection();
-                PreparedStatement statement = connection.prepareStatement("select * from routes where "
+                connection = ConnectionPool.getInstance().getConnection();
+                statement = connection.prepareStatement("select * from routes where "
                         + "startStation = " + startStation + " && "
                         + "finalStation = " + finalStation + ";");
-                ResultSet result = statement.executeQuery();
+                result = statement.executeQuery();
                 if (result.next()) {
                     route = new Route(result.getInt("idRoutes"), StationDAO.getINSTANCE().getStationById(result.getInt("startStation")), StationDAO.getINSTANCE().getStationById(result.getInt("finalStation")));
                 }
                 ConnectionPool.getInstance().releaseConnection(connection);
             } catch (SQLException ex) {
                 Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                closeJDBC(connection, statement, result);
             }
         }
         return route;
@@ -112,9 +134,11 @@ public class RouteDAO {
 
     public void updateRoute(Route route) {
         if (isFound(route)) {
+            Connection connection = null;
+            PreparedStatement statement = null;
             try {
-                Connection connection = ConnectionPool.getInstance().getConnection();
-                PreparedStatement statement = connection.prepareStatement("update routes set "
+                connection = ConnectionPool.getInstance().getConnection();
+                statement = connection.prepareStatement("update routes set "
                         + "startStation = " + route.getStartStation().getId()
                         + ", finalStation = " + route.getFinalStation().getId()
                         + " where idRoutes = " + route.getId() + ";");
@@ -122,17 +146,22 @@ public class RouteDAO {
                 ConnectionPool.getInstance().releaseConnection(connection);
             } catch (SQLException ex) {
                 Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                closeJDBC(connection, statement);
             }
         }
     }
 
     public boolean isFound(Route route) {
         boolean isFound = false;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement(""
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(""
                     + "select * from routes;");
-            ResultSet result = statement.executeQuery();
+            result = statement.executeQuery();
             while (result.next()) {
                 int startStation = result.getInt("startStation");
                 int finalStation = result.getInt("finalStation");
@@ -143,9 +172,40 @@ public class RouteDAO {
             ConnectionPool.getInstance().releaseConnection(connection);
         } catch (SQLException ex) {
             Logger.getLogger(RouteDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeJDBC(connection, statement, result);
         }
 
         return isFound;
     }
 
+    private void closeJDBC(Connection connection, PreparedStatement statement, ResultSet result) {
+        try {
+            if (result != null) {
+                result.close();
+            }
+        } catch (SQLException e) {
+        }
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException e) {
+        }
+        if (connection != null) {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
+    }
+
+    private void closeJDBC(Connection connection, PreparedStatement statement) {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException e) {
+        }
+        if (connection != null) {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
+    }
 }

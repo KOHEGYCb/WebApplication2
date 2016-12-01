@@ -19,85 +19,101 @@ import java.util.logging.Logger;
 public class StationDAO {
 
     private static StationDAO INSTANCE = new StationDAO();
-    
+
     private StationDAO() {
     }
 
-    public static StationDAO getINSTANCE(){
+    public static StationDAO getINSTANCE() {
         return INSTANCE;
     }
+
     public void createStation(Station station) {
         if (!isFound(station.getName())) {
+            Connection connection = null;
+            PreparedStatement statement = null;
             try {
-                Connection connection = ConnectionPool.getInstance().getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(""
+                connection = ConnectionPool.getInstance().getConnection();
+                statement = connection.prepareStatement(""
                         + "insert into stations (name, roadType) values ("
                         + "\"" + station.getName() + "\", "
                         + new Random().nextInt(4) + ");");
-                preparedStatement.executeUpdate();
-                ConnectionPool.getInstance().releaseConnection(connection);
+                statement.executeUpdate();
             } catch (SQLException ex) {
                 Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                closeJDBC(connection, statement);
             }
         }
     }
 
     public void deleteStation(Station station) {
         if (isFound(station.getName())) {
-            Connection connection;
+            Connection connection = null;
+            PreparedStatement statement = null;
             try {
                 connection = ConnectionPool.getInstance().getConnection();
-                PreparedStatement statement = connection.prepareStatement("delete from stations where idStations = " + station.getId() + ";");
+                statement = connection.prepareStatement("delete from stations where idStations = " + station.getId() + ";");
                 statement.executeUpdate();
-                ConnectionPool.getInstance().releaseConnection(connection);
             } catch (SQLException ex) {
                 Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                closeJDBC(connection, statement);
             }
         }
     }
 
     public Station getStationById(int idStation) {
         Station station = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement(""
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(""
                     + "select * from stations where idStations = " + idStation + ";");
-            ResultSet result = statement.executeQuery();
+            result = statement.executeQuery();
             if (result.next()) {
                 station = new Station(result.getInt("idStations"), result.getString("name"), result.getInt("roadType"));
             }
-            ConnectionPool.getInstance().releaseConnection(connection);
         } catch (SQLException ex) {
             Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeJDBC(connection, statement, result);
         }
         return station;
     }
 
     public Station getStationByName(String name) {
         Station station = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement(""
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(""
                     + "select * from stations where name = \"" + name + "\";");
-            ResultSet result = statement.executeQuery();
+            result = statement.executeQuery();
             if (result.next()) {
                 station = new Station(result.getInt("idStations"), result.getString("name"), result.getInt("roadType"));
             }
-            ConnectionPool.getInstance().releaseConnection(connection);
         } catch (SQLException ex) {
             Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeJDBC(connection, statement, result);
         }
 
         return station;
     }
-    
+
     public List<Station> getAllStations() {
         List<Station> stations = new ArrayList<Station>();
-
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement("select * from stations;");
-            ResultSet result = statement.executeQuery();
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement("select * from stations;");
+            result = statement.executeQuery();
             while (result.next()) {
                 int idStatioon = result.getInt("idStations");
                 String name = result.getString("name");
@@ -105,41 +121,78 @@ public class StationDAO {
 
                 stations.add(new Station(idStatioon, name, roadType));
             }
-            ConnectionPool.getInstance().releaseConnection(connection);
         } catch (SQLException ex) {
             Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeJDBC(connection, statement, result);
         }
 
         return stations;
     }
 
     public void updateStation(Station station) {
-//        if (isFound(station.getName())) {
-            try {
-                Connection connection = ConnectionPool.getInstance().getConnection();
-                PreparedStatement statement = connection.prepareStatement("update stations set name = \"" + station.getName()
-                        + "\", roadType = " + station.getTypeRoad() + " where idStations = " + station.getId() + ";");
-                statement.executeUpdate();
-                ConnectionPool.getInstance().releaseConnection(connection);
-            } catch (SQLException ex) {
-                Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-//        }
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement("update stations set name = \"" + station.getName()
+                    + "\", roadType = " + station.getTypeRoad() + " where idStations = " + station.getId() + ";");
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            closeJDBC(connection, statement);
+        }
     }
 
     public boolean isFound(String name) {
         boolean newStation = false;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement("select name from stations where name = \"" + name + "\";");
-            ResultSet result = statement.executeQuery();
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement("select name from stations where name = \"" + name + "\";");
+            result = statement.executeQuery();
             if (result.next()) {
                 newStation = true;
             }
             ConnectionPool.getInstance().releaseConnection(connection);
         } catch (SQLException ex) {
             Logger.getLogger(StationDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            closeJDBC(connection, statement, result);
         }
         return newStation;
+    }
+
+    private void closeJDBC(Connection connection, PreparedStatement statement, ResultSet result) {
+        try {
+            if (result != null) {
+                result.close();
+            }
+        } catch (SQLException e) {
+        }
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException e) {
+        }
+        if (connection != null) {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
+    }
+
+    private void closeJDBC(Connection connection, PreparedStatement statement) {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException e) {
+        }
+        if (connection != null) {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
     }
 }

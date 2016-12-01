@@ -31,17 +31,21 @@ public class TransportDAO {
 
     public void createTransport(Transport transport) {
         if (!isFound(transport)) {
+            Connection connection = null;
+            PreparedStatement statement = null;
             try {
-                Connection connection = ConnectionPool.getInstance().getConnection();
-                PreparedStatement statement = connection.prepareStatement("insert into transport (type, number, idRoutes, idDriver) values ("
-                        + transport.getType()+ ", "
+                connection = ConnectionPool.getInstance().getConnection();
+                statement = connection.prepareStatement("insert into transport (type, number, idRoutes, idDriver) values ("
+                        + transport.getType() + ", "
                         + transport.getNumber() + ", "
                         + transport.getIdRoute() + ", "
                         + transport.getIdDriver() + ");");
                 statement.executeUpdate();
-                ConnectionPool.getInstance().releaseConnection(connection);
+
             } catch (SQLException ex) {
                 Logger.getLogger(TransportDAO.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                closeJDBC(connection, statement);
             }
         }
 
@@ -51,112 +55,145 @@ public class TransportDAO {
     }
 
     public void deleteDriverTransport(int idDriver) {
-        try{
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement("delete from transport where idDriver = " + idDriver + ";");
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement("delete from transport where idDriver = " + idDriver + ";");
             statement.executeUpdate();
-            ConnectionPool.getInstance().releaseConnection(connection);
+
         } catch (SQLException ex) {
             Logger.getLogger(DriversDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeJDBC(connection, statement);
         }
     }
 
     public void deleteTransport(Transport transport) {
-        try{
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement("delete from transport where idTransport = " + transport.getId() + ";");
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement("delete from transport where idTransport = " + transport.getId() + ";");
             statement.executeUpdate();
-            ConnectionPool.getInstance().releaseConnection(connection);
+
         } catch (SQLException ex) {
             Logger.getLogger(DriversDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeJDBC(connection, statement);
         }
     }
-    
+
     public Transport getTransport(int idTransport) {
         Transport transport = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement("select * from transport where idTransport = " + idTransport + ";");
-            ResultSet result = statement.executeQuery();
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement("select * from transport where idTransport = " + idTransport + ";");
+            result = statement.executeQuery();
             if (result.next()) {
                 transport = createTransport(result);
             }
-            ConnectionPool.getInstance().releaseConnection(connection);
+
         } catch (SQLException ex) {
             Logger.getLogger(TransportDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeJDBC(connection, statement, result);
         }
         return transport;
     }
 
     public List<Transport> getAllTransport() {
         List<Transport> transport = new ArrayList<Transport>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement("select * from transport;");
-            ResultSet result = statement.executeQuery();
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement("select * from transport;");
+            result = statement.executeQuery();
             while (result.next()) {
                 transport.add(createTransport(result));
             }
-            ConnectionPool.getInstance().releaseConnection(connection);
+
         } catch (SQLException ex) {
             Logger.getLogger(TransportDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeJDBC(connection, statement, result);
         }
         return transport;
     }
 
     public List<Transport> getTransportByIdDriver(int idDriver) {
         List<Transport> transport = new ArrayList<Transport>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement("select * from transport where idDriver = " + idDriver + ";");
-            ResultSet result = statement.executeQuery();
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement("select * from transport where idDriver = " + idDriver + ";");
+            result = statement.executeQuery();
             while (result.next()) {
                 transport.add(createTransport(result));
             }
-            ConnectionPool.getInstance().releaseConnection(connection);
+
         } catch (SQLException ex) {
             Logger.getLogger(TransportDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeJDBC(connection, statement, result);
         }
         return transport;
     }
 
     public List<Transport> getTransportByIdRoute(int idRoute) {
         List<Transport> transport = new ArrayList<Transport>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement("select * from transport where idRoutes = " + idRoute + ";");
-            ResultSet result = statement.executeQuery();
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement("select * from transport where idRoutes = " + idRoute + ";");
+            result = statement.executeQuery();
             while (result.next()) {
                 transport.add(createTransport(result));
             }
-            ConnectionPool.getInstance().releaseConnection(connection);
+
         } catch (SQLException ex) {
             Logger.getLogger(TransportDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeJDBC(connection, statement, result);
         }
         return transport;
     }
-    
+
     public boolean isFound(Transport transport) {
         boolean isFound = false;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
         try {
-            Connection connection = ConnectionPool.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement("select * from transport where "
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement("select * from transport where "
                     + "type = " + transport.getType() + " &&"
                     + "number = " + transport.getNumber() + ";");
-            ResultSet result = statement.executeQuery();
+            result = statement.executeQuery();
             if (result.next()) {
                 isFound = true;
             }
-            ConnectionPool.getInstance().releaseConnection(connection);
+
         } catch (SQLException ex) {
             Logger.getLogger(TransportDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeJDBC(connection, statement, result);
         }
         return isFound;
     }
 
     private Transport createTransport(ResultSet result) {
         Transport transport = null;
-        
+
         try {
             int id = result.getInt("idTransport");
             int number = result.getInt("number");
@@ -181,5 +218,35 @@ public class TransportDAO {
         }
 
         return transport;
+    }
+
+    private void closeJDBC(Connection connection, PreparedStatement statement, ResultSet result) {
+        try {
+            if (result != null) {
+                result.close();
+            }
+        } catch (SQLException e) {
+        }
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException e) {
+        }
+        if (connection != null) {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
+    }
+
+    private void closeJDBC(Connection connection, PreparedStatement statement) {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException e) {
+        }
+        if (connection != null) {
+            ConnectionPool.getInstance().releaseConnection(connection);
+        }
     }
 }
